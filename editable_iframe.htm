@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      #contentEditor {
+        background-color: aliceblue;
+        min-height: 20vh;
+        min-width: 80vh;
+        border: 1px solid;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="row">
+      <button class="contenteditable-legend">[address]</button>
+      <button class="contenteditable-legend">[phone]</button>
+      <button class="contenteditable-legend">[e-mail]</button>
+    </div>
+    <div>contentEditor</div>
+    <div contenteditable="true" id="contentEditor">
+      <p>Hello</p>
+      <p>World</p>
+      <b>ABC</b>
+    </div>
+  </body>
+</html>

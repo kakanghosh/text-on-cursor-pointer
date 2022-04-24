@@ -5,10 +5,8 @@ window.addEventListener('DOMContentLoaded', () => {
 
   const subjectLegendsBtn = document.getElementsByClassName('subject-legend');
   const templateLegendsBtn = document.getElementsByClassName('template-legend');
-  const contenteditableLegendsBtn = document.getElementsByClassName(
-    'contenteditable-legend'
-  );
-  const contenteditableDiv = document.getElementById('contentEditor');
+
+  const contentEditorIframe = document.querySelector('iframe');
 
   function getCursorInfo(element) {
     const startIndex = element.selectionStart;
@@ -30,35 +28,9 @@ window.addEventListener('DOMContentLoaded', () => {
     element.selectionEnd = startIndex + text.length;
   }
 
-  Object.keys(subjectLegendsBtn)
-    .map((key) => subjectLegendsBtn[key])
-    .forEach((element) => {
-      element.addEventListener('click', function (event) {
-        const { textContent: legend } = event.target;
-        putTextAtCursorPoint(subjectInput, legend);
-      });
-    });
+  function insertTextAtCursorContentEditable(text, contenteditableDiv) {
+    const selection = contentEditorIframe.contentWindow.document.getSelection();
 
-  Object.keys(templateLegendsBtn)
-    .map((key) => templateLegendsBtn[key])
-    .forEach((element) => {
-      element.addEventListener('click', function (event) {
-        const { textContent: legend } = event.target;
-        putTextAtCursorPoint(templatetextArea, legend);
-      });
-    });
-
-  Object.keys(contenteditableLegendsBtn)
-    .map((key) => contenteditableLegendsBtn[key])
-    .forEach((element) => {
-      element.addEventListener('click', function (event) {
-        const { textContent: legend } = event.target;
-        insertTextAtCursor(legend);
-      });
-    });
-
-  function insertTextAtCursor(text) {
-    const selection = window.getSelection();
     if (selection.rangeCount) {
       const range = selection.getRangeAt(0);
       let parentNode = range.commonAncestorContainer.parentElement;
@@ -85,6 +57,45 @@ window.addEventListener('DOMContentLoaded', () => {
       }
     }
   }
+
+  contentEditorIframe.onload = function () {
+    const contenteditableLegendsBtn =
+      contentEditorIframe.contentWindow.document.getElementsByClassName(
+        'contenteditable-legend'
+      );
+
+    const contenteditableDiv =
+      contentEditorIframe.contentWindow.document.getElementById(
+        'contentEditor'
+      );
+
+    Object.keys(contenteditableLegendsBtn)
+      .map((key) => contenteditableLegendsBtn[key])
+      .forEach((element) => {
+        element.addEventListener('click', function (event) {
+          const { textContent: legend } = event.target;
+          insertTextAtCursorContentEditable(legend, contenteditableDiv);
+        });
+      });
+  };
+
+  Object.keys(subjectLegendsBtn)
+    .map((key) => subjectLegendsBtn[key])
+    .forEach((element) => {
+      element.addEventListener('click', function (event) {
+        const { textContent: legend } = event.target;
+        putTextAtCursorPoint(subjectInput, legend);
+      });
+    });
+
+  Object.keys(templateLegendsBtn)
+    .map((key) => templateLegendsBtn[key])
+    .forEach((element) => {
+      element.addEventListener('click', function (event) {
+        const { textContent: legend } = event.target;
+        putTextAtCursorPoint(templatetextArea, legend);
+      });
+    });
 
   submitButton.addEventListener('click', () => {
     console.log({
