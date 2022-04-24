@@ -18,10 +18,16 @@
       .add-margin-top {
         margin-top: 5px;
       }
+      #contentEditor {
+        background-color: aliceblue;
+        min-height: 20vh;
+        max-width: 80vh;
+        border: 1px solid;
+      }
     </style>
   </head>
   <body>
-    <div class="container-fluid">
+    <div class="container">
       <div class="row add-margin-bottom add-margin-top">
         <button class="subject-legend">[name]</button>
         <button class="subject-legend">[age]</button>
@@ -40,6 +46,19 @@
       <div class="row">
         <div>Template</div>
         <div><textarea id="template" rows="4" cols="50"></textarea></div>
+      </div>
+      <div class="row">
+        <button class="contenteditable-legend">[address]</button>
+        <button class="contenteditable-legend">[phone]</button>
+        <button class="contenteditable-legend">[e-mail]</button>
+      </div>
+      <div class="row">
+        <div>contentEditor</div>
+        <div contenteditable="true" id="contentEditor">
+          <p>Hello</p>
+          <p>World</p>
+          <b>ABC</b>
+        </div>
       </div>
       <div class="row">
         <button id="submit">Submit</button>
