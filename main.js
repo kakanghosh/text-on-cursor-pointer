@@ -6,6 +6,10 @@ window.addEventListener('DOMContentLoaded', () => {
   const subjectLegendsBtn = document.getElementsByClassName('subject-legend');
   const templateLegendsBtn = document.getElementsByClassName('template-legend');
 
+  const contenteditableLegendsBtn = document.getElementsByClassName(
+    'contenteditable-legend'
+  );
+
   const contentEditorIframe = document.querySelector('iframe');
 
   function getCursorInfo(element) {
@@ -28,53 +32,50 @@ window.addEventListener('DOMContentLoaded', () => {
     element.selectionEnd = startIndex + text.length;
   }
 
-  function insertTextAtCursorContentEditable(text, contenteditableDiv) {
+  function insertTextNodeAtCursorContentEditable(text) {
     const selection = contentEditorIframe.contentWindow.document.getSelection();
 
     if (selection.rangeCount) {
       const range = selection.getRangeAt(0);
-      let parentNode = range.commonAncestorContainer.parentElement;
-      let contentEditorChild = false;
-      while (parentNode.tagName !== 'BODY') {
-        parentNode = parentNode.parentElement;
-        if (parentNode === contenteditableDiv) {
-          contentEditorChild = true;
-          break;
-        }
-      }
 
-      if (contentEditorChild) {
-        range.deleteContents();
+      range.deleteContents();
 
-        const span = document.createElement('span');
-        span.innerText = text;
+      const span = document.createElement('span');
+      span.className = 'color-yellow';
+      span.innerText = text;
 
-        range.insertNode(span);
-        range.collapse(false);
+      range.insertNode(span);
+      range.collapse(true);
 
-        selection.removeAllRanges();
-        selection.addRange(range);
-      }
+      selection.removeAllRanges();
+      selection.addRange(range);
+      return span;
     }
   }
 
-  contentEditorIframe.onload = function () {
-    const contenteditableLegendsBtn =
-      contentEditorIframe.contentWindow.document.getElementsByClassName(
-        'contenteditable-legend'
-      );
+  contentEditorIframe.onload = () => {
+    const { document } = contentEditorIframe.contentWindow;
 
-    const contenteditableDiv =
-      contentEditorIframe.contentWindow.document.getElementById(
-        'contentEditor'
-      );
+    const contenteditableDiv = document.body;
 
     Object.keys(contenteditableLegendsBtn)
       .map((key) => contenteditableLegendsBtn[key])
       .forEach((element) => {
         element.addEventListener('click', function (event) {
           const { textContent: legend } = event.target;
-          insertTextAtCursorContentEditable(legend, contenteditableDiv);
+          const newNode = insertTextNodeAtCursorContentEditable(legend);
+          if (newNode) {
+            const selection = document.getSelection();
+            const range = document.createRange();
+
+            range.setStartAfter(newNode);
+            range.collapse(true);
+
+            selection.removeAllRanges();
+            selection.addRange(range);
+
+            contenteditableDiv.focus();
+          }
         });
       });
   };
